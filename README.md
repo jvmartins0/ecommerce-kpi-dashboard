@@ -1,11 +1,11 @@
-# 📊 Dashboard de KPIs — E-commerce
+#  Dashboard de KPIs — E-commerce
 
 > Trabalho Avaliativo — Disciplina de Banco de Dados  
 > Dashboard interativo de indicadores comerciais com consultas SQL em tempo real.
 
 ---
 
-## 🚀 Demo
+##  Demo
 
 Abra o arquivo [`dashboard.html`](./dashboard.html) diretamente no navegador — **nenhuma instalação necessária**.
 
@@ -13,7 +13,7 @@ O banco de dados SQLite roda inteiramente no browser via **WebAssembly (sql.js)*
 
 ---
 
-## 🗂️ Estrutura do Repositório
+##  Estrutura do Repositório
 
 ```
 ecommerce-kpi-dashboard/
@@ -31,7 +31,7 @@ ecommerce-kpi-dashboard/
 
 ---
 
-## 🗄️ Estrutura do Banco de Dados
+##  Estrutura do Banco de Dados
 
 ```sql
 categorias (id, nome)
@@ -53,7 +53,7 @@ categorias (id, nome)
 
 ---
 
-## 📈 KPIs do Dashboard
+##  KPIs do Dashboard
 
 | Indicador        | Função SQL                    |
 |------------------|-------------------------------|
@@ -66,7 +66,7 @@ categorias (id, nome)
 
 ---
 
-## 📊 Gráficos
+##  Gráficos
 
 | Tipo              | Dado visualizado                              |
 |-------------------|-----------------------------------------------|
@@ -78,7 +78,7 @@ categorias (id, nome)
 
 ---
 
-## 🔍 Consultas SQL Implementadas
+##  Consultas SQL Implementadas
 
 O arquivo [`sql/ecommerce_dashboard.sql`](./sql/ecommerce_dashboard.sql) contém **8 consultas analíticas** comentadas, cobrindo todos os requisitos:
 
@@ -93,7 +93,7 @@ O arquivo [`sql/ecommerce_dashboard.sql`](./sql/ecommerce_dashboard.sql) contém
 
 ---
 
-## 🎛️ Filtros Dinâmicos
+##  Filtros Dinâmicos
 
 O dashboard recalcula todos os KPIs e gráficos ao aplicar filtros combinados por:
 
@@ -103,7 +103,7 @@ O dashboard recalcula todos os KPIs e gráficos ao aplicar filtros combinados po
 
 ---
 
-## 🛠️ Tecnologias
+##  Tecnologias
 
 | Camada         | Tecnologia                         |
 |----------------|------------------------------------|
@@ -112,39 +112,6 @@ O dashboard recalcula todos os KPIs e gráficos ao aplicar filtros combinados po
 | Gráficos       | [Chart.js](https://www.chartjs.org/) 4.4.1 |
 | Interface      | HTML5 + CSS3 (dark mode nativo)    |
 | Ícones         | [Tabler Icons](https://tabler.io/icons) |
-
----
-
-## ▶️ Como usar
-
-### Opção 1 — Browser (zero config)
-```bash
-# Clone o repositório
-git clone https://github.com/SEU_USUARIO/ecommerce-kpi-dashboard.git
-
-# Abra o arquivo no navegador
-open ecommerce-kpi-dashboard/dashboard.html
-```
-
-### Opção 2 — PostgreSQL / Supabase
-```bash
-# Execute o script SQL no seu banco
-psql -U usuario -d banco_de_dados -f sql/ecommerce_dashboard.sql
-```
-
----
-
-## 📋 Critérios atendidos
-
-- [x] Mínimo de 2 tabelas relacionadas (4 tabelas com FK)
-- [x] `SELECT` com `WHERE`
-- [x] Agregações: `COUNT`, `SUM`, `AVG`, `MIN`, `MAX`
-- [x] `GROUP BY` e `ORDER BY` (ASC e DESC)
-- [x] Pelo menos 3 consultas analíticas (8 no total)
-- [x] Pelo menos 4 KPIs (6 no total)
-- [x] Pelo menos 3 tipos de gráficos (5 no total)
-- [x] Filtros dinâmicos (mês, categoria, status)
-- [x] Conexão direta com consultas SQL (sem dados estáticos)
 
 ---
 
