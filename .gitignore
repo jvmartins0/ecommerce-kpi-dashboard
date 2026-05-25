@@ -1,0 +1,22 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Node (caso alguém queira adicionar um servidor local)
+node_modules/
+npm-debug.log*
+
+# Python (caso queira rodar scripts auxiliares)
+__pycache__/
+*.pyc
+.env
+venv/

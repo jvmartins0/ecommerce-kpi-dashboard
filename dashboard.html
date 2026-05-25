@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard KPIs — E-commerce</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f5f5f3;
+      --surface: #ffffff;
+      --surface-2: #f1efe8;
+      --border: rgba(0,0,0,0.10);
+      --border-md: rgba(0,0,0,0.18);
+      --text: #1a1a18;
+      --text-2: #5f5e5a;
+      --text-3: #888780;
+      --blue: #378ADD;
+      --blue-light: #E6F1FB;
+      --blue-dark: #185FA5;
+      --teal: #1D9E75;
+      --teal-light: #E1F5EE;
+      --green: #3B6D11;
+      --green-light: #EAF3DE;
+      --amber: #BA7517;
+      --amber-light: #FAEEDA;
+      --red: #A32D2D;
+      --red-light: #FCEBEB;
+      --coral: #D85A30;
+      --pink: #D4537E;
+      --purple: #534AB7;
+      --radius: 8px;
+      --radius-lg: 12px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1a1a18;
+        --surface: #23231f;
+        --surface-2: #2c2c2a;
+        --border: rgba(255,255,255,0.10);
+        --border-md: rgba(255,255,255,0.18);
+        --text: #f0ede6;
+        --text-2: #b4b2a9;
+        --text-3: #888780;
+        --blue-light: #042C53;
+        --blue-dark: #85B7EB;
+        --teal-light: #04342C;
+        --green-light: #173404;
+        --amber-light: #412402;
+        --red-light: #501313;
+      }
+    }
+
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    .topbar { background: var(--surface); border-bottom: 0.5px solid var(--border); padding: 0 2rem; display: flex; align-items: center; gap: 12px; height: 56px; position: sticky; top: 0; z-index: 10; }
+    .topbar-logo { font-size: 15px; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 8px; }
+    .topbar-logo i { color: var(--blue); font-size: 20px; }
+    .topbar-sub { font-size: 12px; color: var(--text-3); margin-left: 4px; }
+    .topbar-spacer { flex: 1; }
+    .topbar-tag { font-size: 11px; background: var(--blue-light); color: var(--blue-dark); padding: 3px 10px; border-radius: 20px; font-weight: 500; }
+
+    .main { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+
+    .filters-bar { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 14px 20px; display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-bottom: 1.5rem; }
+    .filter-group { display: flex; align-items: center; gap: 8px; }
+    .filter-group label { font-size: 12px; color: var(--text-2); font-weight: 500; white-space: nowrap; }
+    .filter-group select { font-size: 13px; padding: 6px 10px; border-radius: var(--radius); border: 0.5px solid var(--border-md); background: var(--surface-2); color: var(--text); cursor: pointer; }
+    .filter-group select:focus { outline: 2px solid var(--blue); outline-offset: 1px; }
+    .filter-reset { margin-left: auto; font-size: 12px; color: var(--text-3); background: none; border: 0.5px solid var(--border-md); border-radius: var(--radius); padding: 6px 12px; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+    .filter-reset:hover { color: var(--text); border-color: var(--border-md); background: var(--surface-2); }
+
+    .section-label { font-size: 11px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin-bottom: 1.5rem; }
+    .kpi { background: var(--surface-2); border-radius: var(--radius); padding: 16px 18px; }
+    .kpi-icon { font-size: 18px; color: var(--text-3); margin-bottom: 8px; }
+    .kpi-label { font-size: 11px; color: var(--text-2); margin-bottom: 5px; font-weight: 500; }
+    .kpi-value { font-size: 20px; font-weight: 600; color: var(--text); }
+    .kpi-meta { font-size: 10px; color: var(--text-3); margin-top: 4px; font-family: monospace; }
+
+    .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 1.5rem; }
+    .chart-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 18px 20px; }
+    .chart-card.full { grid-column: 1 / -1; }
+    .chart-header { margin-bottom: 14px; }
+    .chart-title { font-size: 13px; font-weight: 600; color: var(--text); }
+    .chart-sub { font-size: 11px; color: var(--text-2); margin-top: 2px; }
+    .sql-chip { display: inline-block; font-size: 10px; font-family: monospace; background: var(--blue-light); color: var(--blue-dark); padding: 2px 8px; border-radius: 4px; margin-top: 6px; }
+    .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
+    .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-2); }
+    .legend-dot { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    th { text-align: left; padding: 8px 10px; color: var(--text-2); font-weight: 600; border-bottom: 0.5px solid var(--border); font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; }
+    td { padding: 8px 10px; border-bottom: 0.5px solid var(--border); color: var(--text); vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--surface-2); }
+
+    .badge { display: inline-block; padding: 2px 9px; border-radius: 20px; font-size: 10px; font-weight: 600; }
+    .badge-green { background: var(--green-light); color: var(--green); }
+    .badge-amber { background: var(--amber-light); color: var(--amber); }
+    .badge-red   { background: var(--red-light);   color: var(--red); }
+
+    .bar-wrap { height: 5px; background: var(--surface-2); border-radius: 3px; margin-top: 4px; overflow: hidden; }
+    .bar-fill  { height: 100%; border-radius: 3px; }
+
+    .empty { text-align: center; color: var(--text-3); padding: 2rem; font-size: 13px; }
+
+    footer { text-align: center; font-size: 11px; color: var(--text-3); padding: 2rem; border-top: 0.5px solid var(--border); margin-top: 1rem; }
+
+    @media (max-width: 680px) {
+      .main { padding: 1rem; }
+      .charts-grid { grid-template-columns: 1fr; }
+      .chart-card.full { grid-column: 1; }
+      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-logo">
+    <i class="ti ti-chart-bar"></i>
+    KPI Dashboard
+    <span class="topbar-sub">E-commerce Analytics</span>
+  </div>
+  <div class="topbar-spacer"></div>
+  <span class="topbar-tag">SQL · Chart.js · sql.js</span>
+</header>
+
+<main class="main">
+
+  <div class="filters-bar">
+    <div class="filter-group">
+      <label><i class="ti ti-calendar" style="font-size:13px;vertical-align:-1px"></i> Mês</label>
+      <select id="filtroMes" onchange="atualizar()">
+        <option value="all">Todos</option>
+        <option value="1">Janeiro</option>
+        <option value="2">Fevereiro</option>
+        <option value="3">Março</option>
+        <option value="4">Abril</option>
+        <option value="5">Maio</option>
+        <option value="6">Junho</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label><i class="ti ti-tag" style="font-size:13px;vertical-align:-1px"></i> Categoria</label>
+      <select id="filtroCategoria" onchange="atualizar()">
+        <option value="all">Todas</option>
+        <option value="Eletrônicos">Eletrônicos</option>
+        <option value="Moda">Moda</option>
+        <option value="Casa & Jardim">Casa & Jardim</option>
+        <option value="Esportes">Esportes</option>
+        <option value="Beleza">Beleza</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label><i class="ti ti-circle-check" style="font-size:13px;vertical-align:-1px"></i> Status</label>
+      <select id="filtroStatus" onchange="atualizar()">
+        <option value="all">Todos</option>
+        <option value="concluido">Concluído</option>
+        <option value="pendente">Pendente</option>
+        <option value="cancelado">Cancelado</option>
+      </select>
+    </div>
+    <button class="filter-reset" onclick="resetFiltros()">
+      <i class="ti ti-refresh" style="font-size:13px"></i> Resetar
+    </button>
+  </div>
+
+  <div class="section-label">indicadores principais</div>
+  <div class="kpi-grid" id="kpiGrid"></div>
+
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title">Receita por categoria</div>
+        <div class="chart-sub">Distribuição percentual da receita entre segmentos</div>
+        <span class="sql-chip">GROUP BY categoria ORDER BY total DESC</span>
+      </div>
+      <div id="legendPizza" class="legend"></div>
+      <div style="position:relative;width:100%;height:220px">
+        <canvas id="chartPizza" role="img" aria-label="Gráfico de donut com receita por categoria">Receita por categoria.</canvas>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title">Ticket médio por categoria</div>
+        <div class="chart-sub">Valor médio dos pedidos em cada segmento</div>
+        <span class="sql-chip">SELECT AVG(valor_total) GROUP BY categoria</span>
+      </div>
+      <div style="position:relative;width:100%;height:260px">
+        <canvas id="chartTicket" role="img" aria-label="Barras horizontais com ticket médio por categoria">Ticket médio.</canvas>
+      </div>
+    </div>
+
+    <div class="chart-card full">
+      <div class="chart-header">
+        <div class="chart-title">Evolução mensal de vendas</div>
+        <div class="chart-sub">Receita acumulada e volume de pedidos mês a mês</div>
+        <span class="sql-chip">SUM(valor_total), COUNT(*) GROUP BY mes ORDER BY mes ASC</span>
+      </div>
+      <div class="legend">
+        <div class="legend-item"><span class="legend-dot" style="background:#378ADD"></span>Receita (R$)</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#1D9E75;border-radius:50%"></span>Nº de pedidos</div>
+      </div>
+      <div style="position:relative;width:100%;height:230px">
+        <canvas id="chartLinha" role="img" aria-label="Gráfico de linha com evolução mensal de receita e pedidos">Evolução mensal.</canvas>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title">Status dos pedidos</div>
+        <div class="chart-sub">Contagem por situação de entrega</div>
+        <span class="sql-chip">SELECT status, COUNT(*) GROUP BY status</span>
+      </div>
+      <div style="position:relative;width:100%;height:210px">
+        <canvas id="chartStatus" role="img" aria-label="Gráfico de donut com distribuição de status dos pedidos">Status.</canvas>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title">Top 5 produtos</div>
+        <div class="chart-sub">Maior receita acumulada no período filtrado</div>
+        <span class="sql-chip">ORDER BY SUM(valor_total) DESC LIMIT 5</span>
+      </div>
+      <div id="topProdutos"></div>
+    </div>
+
+    <div class="chart-card full">
+      <div class="chart-header">
+        <div class="chart-title">Detalhamento de pedidos</div>
+        <div class="chart-sub">Últimos 10 registros com os filtros aplicados</div>
+        <span class="sql-chip">SELECT * FROM pedidos JOIN produtos WHERE … ORDER BY id DESC LIMIT 10</span>
+      </div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead><tr><th>#</th><th>Produto</th><th>Categoria</th><th>Valor</th><th>Qtd</th><th>Status</th><th>Mês</th></tr></thead>
+          <tbody id="tbodyPedidos"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  Dashboard de KPIs · E-commerce · Trabalho Avaliativo — Banco de Dados &nbsp;|&nbsp;
+  Powered by <strong>sql.js</strong> (SQLite via WebAssembly) + <strong>Chart.js</strong>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/sql-wasm.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+/* ── dados mestres ── */
+const PRODUTOS_DATA = [
+  {id:1,  nome:'Smartphone X12',      cat:'Eletrônicos',  preco:1299},
+  {id:2,  nome:'Notebook Pro',        cat:'Eletrônicos',  preco:3499},
+  {id:3,  nome:'Fone Bluetooth',      cat:'Eletrônicos',  preco:349},
+  {id:4,  nome:'Smartwatch',          cat:'Eletrônicos',  preco:899},
+  {id:5,  nome:'Tênis Running',       cat:'Esportes',     preco:259},
+  {id:6,  nome:'Mochila Sport',       cat:'Esportes',     preco:189},
+  {id:7,  nome:'Camiseta Algodão',    cat:'Moda',         preco:89},
+  {id:8,  nome:'Calça Jeans',         cat:'Moda',         preco:169},
+  {id:9,  nome:'Luminária LED',       cat:'Casa & Jardim',preco:129},
+  {id:10, nome:'Panela Antiaderente', cat:'Casa & Jardim',preco:199},
+  {id:11, nome:'Kit Skincare',        cat:'Beleza',       preco:219},
+  {id:12, nome:'Protetor Solar SPF',  cat:'Beleza',       preco:59},
+];
+const STATUS_POOL = ['concluido','concluido','concluido','pendente','cancelado'];
+const MESES_LABEL = ['Jan','Fev','Mar','Abr','Mai','Jun'];
+const CORES = ['#378ADD','#1D9E75','#D85A30','#D4537E','#BA7517','#534AB7','#639922'];
+const CORES_BG = ['#E6F1FB','#E1F5EE','#FAECE7','#FBEAF0','#FAEEDA','#EEEDFE','#EAF3DE'];
+
+/* ── helpers ── */
+function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+function pick(arr){return arr[rnd(0,arr.length-1)];}
+function fmt(n){return(n||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});}
+function fmtN(n){return Math.round(n||0).toLocaleString('pt-BR');}
+
+/* ── init banco ── */
+let db, charts = {};
+initSqlJs({locateFile: f=>`https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/${f}`}).then(SQL=>{
+  db = new SQL.Database();
+  db.run(`CREATE TABLE produtos(id INTEGER PRIMARY KEY,nome TEXT,categoria TEXT,preco REAL);`);
+  db.run(`CREATE TABLE pedidos(id INTEGER PRIMARY KEY,produto_id INTEGER,quantidade INTEGER,valor_total REAL,status TEXT,mes INTEGER);`);
+  const sp = db.prepare(`INSERT INTO produtos VALUES(?,?,?,?)`);
+  PRODUTOS_DATA.forEach(p=>sp.run([p.id,p.nome,p.cat,p.preco]));
+  sp.free();
+  const so = db.prepare(`INSERT INTO pedidos VALUES(?,?,?,?,?,?)`);
+  let id=1;
+  for(let mes=1;mes<=6;mes++){
+    for(let i=0;i<rnd(28,55);i++){
+      const p=pick(PRODUTOS_DATA), q=rnd(1,4), s=pick(STATUS_POOL);
+      so.run([id++,p.id,q,p.preco*q,s,mes]);
+    }
+  }
+  so.free();
+  atualizar();
+});
+
+/* ── where builder ── */
+function buildWhere(){
+  const mes=document.getElementById('filtroMes').value;
+  const cat=document.getElementById('filtroCategoria').value;
+  const sta=document.getElementById('filtroStatus').value;
+  const c=[];
+  if(mes!=='all') c.push(`pe.mes=${mes}`);
+  if(cat!=='all') c.push(`pr.categoria='${cat}'`);
+  if(sta!=='all') c.push(`pe.status='${sta}'`);
+  return c.length?'WHERE '+c.join(' AND '):'';
+}
+
+function q(sql){
+  try{ const r=db.exec(sql); return r.length?r[0]:{columns:[],values:[]}; }
+  catch(e){ return{columns:[],values:[]}; }
+}
+
+function destroyChart(id){if(charts[id]){charts[id].destroy();delete charts[id];}}
+
+function resetFiltros(){
+  ['filtroMes','filtroCategoria','filtroStatus'].forEach(id=>document.getElementById(id).value='all');
+  atualizar();
+}
+
+/* ── render ── */
+function atualizar(){
+  if(!db) return;
+  const w = buildWhere();
+
+  /* KPIs */
+  const base = `FROM pedidos pe JOIN produtos pr ON pr.id=pe.produto_id ${w}`;
+  const v1 = q(`SELECT SUM(pe.valor_total) ${base}`).values[0]||[0];
+  const v2 = q(`SELECT COUNT(*) ${base}`).values[0]||[0];
+  const v3 = q(`SELECT AVG(pe.valor_total) ${base}`).values[0]||[0];
+  const v4 = q(`SELECT MAX(pe.valor_total) ${base}`).values[0]||[0];
+  const v5 = q(`SELECT MIN(pe.valor_total) ${base}`).values[0]||[0];
+  const v6 = q(`SELECT COUNT(DISTINCT pe.produto_id) ${base}`).values[0]||[0];
+
+  document.getElementById('kpiGrid').innerHTML = [
+    ['ti-currency-dollar','Receita total',    fmt(v1[0]),   'SUM(valor_total)'],
+    ['ti-shopping-cart',  'Total de pedidos', fmtN(v2[0]),  'COUNT(*)'],
+    ['ti-receipt',        'Ticket médio',     fmt(v3[0]),   'AVG(valor_total)'],
+    ['ti-arrow-up',       'Maior pedido',     fmt(v4[0]),   'MAX(valor_total)'],
+    ['ti-arrow-down',     'Menor pedido',     fmt(v5[0]),   'MIN(valor_total)'],
+    ['ti-package',        'SKUs únicos',      v6[0]||0,     'COUNT(DISTINCT)'],
+  ].map(([icon,label,val,meta])=>`
+    <div class="kpi">
+      <div class="kpi-icon"><i class="ti ${icon}" aria-hidden="true"></i></div>
+      <div class="kpi-label">${label}</div>
+      <div class="kpi-value">${val}</div>
+      <div class="kpi-meta">${meta}</div>
+    </div>`).join('');
+
+  /* Pizza */
+  const rCat = q(`SELECT pr.categoria,SUM(pe.valor_total) ${base} GROUP BY pr.categoria ORDER BY SUM(pe.valor_total) DESC`);
+  const catL = rCat.values.map(r=>r[0]);
+  const catV = rCat.values.map(r=>Math.round(r[1]));
+  document.getElementById('legendPizza').innerHTML = catL.map((l,i)=>
+    `<div class="legend-item"><span class="legend-dot" style="background:${CORES[i%CORES.length]}"></span>${l}</div>`).join('');
+  destroyChart('pizza');
+  charts.pizza = new Chart(document.getElementById('chartPizza'),{
+    type:'doughnut',
+    data:{labels:catL,datasets:[{data:catV,backgroundColor:CORES.slice(0,catL.length),borderWidth:2,borderColor:'#fff'}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+fmt(c.raw)}}}}
+  });
+
+  /* Ticket médio */
+  const rTk = q(`SELECT pr.categoria,AVG(pe.valor_total) ${base} GROUP BY pr.categoria ORDER BY AVG(pe.valor_total) ASC`);
+  destroyChart('ticket');
+  charts.ticket = new Chart(document.getElementById('chartTicket'),{
+    type:'bar',
+    data:{labels:rTk.values.map(r=>r[0]),datasets:[{data:rTk.values.map(r=>Math.round(r[1])),backgroundColor:CORES_BG.slice(0,rTk.values.length),borderColor:CORES.slice(0,rTk.values.length),borderWidth:1.5}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{callback:v=>'R$'+v.toLocaleString('pt-BR')}}}}
+  });
+
+  /* Linha */
+  const rL = q(`SELECT pe.mes,SUM(pe.valor_total),COUNT(*) FROM pedidos pe JOIN produtos pr ON pr.id=pe.produto_id ${buildWhere()} GROUP BY pe.mes ORDER BY pe.mes ASC`);
+  destroyChart('linha');
+  charts.linha = new Chart(document.getElementById('chartLinha'),{
+    type:'line',
+    data:{
+      labels:rL.values.map(r=>MESES_LABEL[r[0]-1]),
+      datasets:[
+        {label:'Receita',data:rL.values.map(r=>Math.round(r[1])),borderColor:'#378ADD',backgroundColor:'rgba(55,138,221,0.07)',fill:true,tension:0.4,yAxisID:'y'},
+        {label:'Pedidos',data:rL.values.map(r=>r[2]),borderColor:'#1D9E75',backgroundColor:'transparent',tension:0.4,yAxisID:'y2',borderDash:[5,4]}
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{
+      y:{ticks:{callback:v=>'R$'+Math.round(v/1000)+'k'},position:'left'},
+      y2:{ticks:{callback:v=>v+' ped'},position:'right',grid:{drawOnChartArea:false}}
+    }}
+  });
+
+  /* Status */
+  const rSt = q(`SELECT pe.status,COUNT(*) ${base} GROUP BY pe.status ORDER BY COUNT(*) DESC`);
+  const stColor={'concluido':'#1D9E75','pendente':'#BA7517','cancelado':'#D85A30'};
+  destroyChart('status');
+  charts.status = new Chart(document.getElementById('chartStatus'),{
+    type:'doughnut',
+    data:{labels:rSt.values.map(r=>r[0]),datasets:[{data:rSt.values.map(r=>r[1]),backgroundColor:rSt.values.map(r=>stColor[r[0]]||'#888'),borderWidth:2,borderColor:'#fff'}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{position:'bottom',labels:{font:{size:11},padding:12}}}}
+  });
+
+  /* Top produtos */
+  const rTop = q(`SELECT pr.nome,pr.categoria,SUM(pe.quantidade) as qtd,SUM(pe.valor_total) as tot ${base} GROUP BY pe.produto_id ORDER BY tot DESC LIMIT 5`);
+  const maxTot = rTop.values.length ? Math.max(...rTop.values.map(r=>r[3])) : 1;
+  document.getElementById('topProdutos').innerHTML = rTop.values.length
+    ? `<table><thead><tr><th>Produto</th><th style="text-align:right">Qtd</th><th style="text-align:right">Receita</th></tr></thead><tbody>${
+        rTop.values.map((r,i)=>`<tr>
+          <td><span style="font-weight:600">${r[0]}</span>
+            <div class="bar-wrap"><div class="bar-fill" style="width:${Math.round(r[3]/maxTot*100)}%;background:${CORES[i]}"></div></div>
+          </td>
+          <td style="text-align:right;color:var(--text-2)">${r[2]}</td>
+          <td style="text-align:right;font-weight:600;color:var(--blue)">${fmt(r[3])}</td>
+        </tr>`).join('')
+      }</tbody></table>`
+    : '<div class="empty">Nenhum resultado</div>';
+
+  /* Tabela */
+  const rTab = q(`SELECT pe.id,pr.nome,pr.categoria,pe.valor_total,pe.quantidade,pe.status,pe.mes FROM pedidos pe JOIN produtos pr ON pr.id=pe.produto_id ${w} ORDER BY pe.id DESC LIMIT 10`);
+  const badgeClass = {concluido:'badge-green',pendente:'badge-amber',cancelado:'badge-red'};
+  document.getElementById('tbodyPedidos').innerHTML = rTab.values.length
+    ? rTab.values.map(r=>`<tr>
+        <td style="color:var(--text-3);font-family:monospace">#${r[0]}</td>
+        <td style="font-weight:500">${r[1]}</td>
+        <td style="color:var(--text-2)">${r[2]}</td>
+        <td style="font-weight:600">${fmt(r[3])}</td>
+        <td style="color:var(--text-2)">${r[4]}</td>
+        <td><span class="badge ${badgeClass[r[5]]||''}">${r[5]}</span></td>
+        <td style="color:var(--text-2)">${MESES_LABEL[r[6]-1]}</td>
+      </tr>`).join('')
+    : '<tr><td colspan="7" class="empty">Nenhum pedido encontrado com os filtros atuais.</td></tr>';
+}
+</script>
+</body>
+</html>
